@@ -91,7 +91,7 @@ function checkAnswer(currentLevel){
     else {
         var audio = new Audio("sounds/wrong.mp3")
 audio.play();
-             $("#level-title").text(""Game Over, Press the Reset Button to restart"");
+             $("#level-title").text("Game Over, Press the Reset Button to restart");
               $("body").addClass("game-over");
               setTimeout(function () {
     $("body").removeClass("game-over");}, 200);
@@ -121,6 +121,7 @@ $("#resetButton").on("click", function(event) {
     $("#level-title").text("Press the Start button to begin");
 }
 );
+
 
 
 
