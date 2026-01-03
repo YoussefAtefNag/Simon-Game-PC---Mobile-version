@@ -1,44 +1,130 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
 
-<head>
-  <meta charset="utf-8">
-  <title>Simon</title>
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-</head>
+var buttonColours = ["red" , "blue" , "green" , "yellow"];
+var gamePattern=[];
+var userClickedPattern=[];
+var level=0;
+var started = false;
 
-<body>
-  <h1 id="level-title">Press the Start button to begin</h1>
-  <div class="container">
-    <button id="startButton">Start</button>
-    <button id="resetButton">Reset</button>
-    <div class="row">
 
-      <div type="button" id="green" class="btn green">
+    
+function nextSequence(){
 
-      </div>
+    level++;
+    $("#level-title").text("Level " + level);
 
-      <div type="button" id="red" class="btn red">
+    var randomNumber = Math.random();
+    randomNumber=randomNumber*4;
+    randomNumber=Math.floor(randomNumber);
+    
+    var randomChosenColour = buttonColours[randomNumber];
+    gamePattern.push(randomChosenColour);
 
-      </div>
-    </div>
+    $("#" + randomChosenColour).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 
-    <div class="row">
 
-      <div type="button" id="yellow" class="btn yellow">
+if (randomChosenColour==="red"){
+var audio = new Audio("sounds/red.mp3")
+audio.play();
+}
 
-      </div>
-      <div type="button" id="blue" class="btn blue">
+else if(randomChosenColour==="green") {
+    var audio = new Audio("sounds/green.mp3")
+audio.play();
+}
 
-      </div>
+else if(randomChosenColour==="blue") {
+    var audio = new Audio("sounds/blue.mp3")
+audio.play();
+}
 
-    </div>
+else if(randomChosenColour==="yellow") {
+    var audio = new Audio("sounds/yellow.mp3")
+audio.play();
+}
 
-  </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="game.js"></script>
-</body>
+}
 
-</html>
+
+$(".btn").on("click", function(event) {
+    var userChosenColour = this.id;
+        userClickedPattern.push(userChosenColour);
+        playSound(userChosenColour); 
+          animatePress(userChosenColour);
+          checkAnswer(userClickedPattern.length - 1);
+
+     
+});
+
+function playSound(name) {
+     var audio = new Audio("sounds/" + name + ".mp3");
+    audio.play();
+   
+}
+
+
+function animatePress(currentColor) {
+
+  $("#" + currentColor).addClass("pressed");
+
+    setTimeout(function () {
+    $("#" + currentColor).removeClass("pressed");}, 100);
+}
+
+
+$(document).keypress(function(event){
+    if(!started){
+     $("#level-title").text("Level " + level);
+    nextSequence();
+    started = true;
+    }
+}
+);
+
+function checkAnswer(currentLevel){
+    if (userClickedPattern[currentLevel]===gamePattern[currentLevel]){
+        if(userClickedPattern.length===gamePattern.length){
+            nextSequence();
+            userClickedPattern=[];
+        }
+    }
+    else {
+        var audio = new Audio("sounds/wrong.mp3")
+audio.play();
+             $("#level-title").text("Game Over, Press the Reset Button to restart");
+              $("body").addClass("game-over");
+              setTimeout(function () {
+    $("body").removeClass("game-over");}, 200);
+    startOver();
+    }
+}
+
+function startOver(){
+    level=0;
+    gamePattern=[];
+    started=false;
+    userClickedPattern = []; 
+}
+
+$("#startButton").on("click", function(event) {
+  if(!started){
+     $("#level-title").text("Level " + level);
+    nextSequence();
+    started = true;
+    }
+}
+);
+
+$("#resetButton").on("click", function(event) {
+  level=0;
+    gamePattern=[];
+    started=false;
+    userClickedPattern = []; 
+    $("#level-title").text("Press the Start button to begin");
+}
+);
+
+
+
+
+
